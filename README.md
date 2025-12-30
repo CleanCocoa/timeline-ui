@@ -1,6 +1,6 @@
 # TimelineUI
 
-A SwiftUI component library for displaying calendar timeline views in iOS apps. Show daily schedules with automatic conflict detection and layout.
+A SwiftUI component library for displaying calendar timeline views in iOS apps. Show daily schedules on an hour grid with automatic layout for overlapping events.
 
 ## Installation
 
@@ -98,11 +98,11 @@ AccessPromptView(
 
 | | Light | Dark |
 |---|:-----:|:----:|
-| **Compact** - 2-3 hour window with conflict layout | ![Compact light](screenshots/compact-conflicts-light.png) | ![Compact dark](screenshots/compact-conflicts-dark.png) |
+| **Compact** - Focused 2-3 hour window | ![Compact light](screenshots/compact-conflicts-light.png) | ![Compact dark](screenshots/compact-conflicts-dark.png) |
 | **Day** - Full schedule with hour grid | ![Day light](screenshots/day-simple-light.png) | ![Day dark](screenshots/day-simple-dark.png) |
-| **Conflicts** - Overlapping events side-by-side | ![Conflicts light](screenshots/day-conflicts-light.png) | ![Conflicts dark](screenshots/day-conflicts-dark.png) |
-| **Many events** - Handles arbitrary input gracefully | ![Many light](screenshots/compact-many-light.png) | ![Many dark](screenshots/compact-many-dark.png) |
-| **Access restricted** - Blurred timeline with permission prompt | ![Restricted light](screenshots/access-restricted-light.png) | ![Restricted dark](screenshots/access-restricted-dark.png) |
+| **Overlapping** - Events arranged side-by-side | ![Overlapping light](screenshots/day-conflicts-light.png) | ![Overlapping dark](screenshots/day-conflicts-dark.png) |
+| **Many events** - Handles busy schedules gracefully | ![Many light](screenshots/compact-many-light.png) | ![Many dark](screenshots/compact-many-dark.png) |
+| **Access restricted** - Blurred with permission prompt | ![Restricted light](screenshots/access-restricted-light.png) | ![Restricted dark](screenshots/access-restricted-dark.png) |
 
 ## Requirements
 

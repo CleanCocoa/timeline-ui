@@ -8,9 +8,9 @@ A SwiftUI component library for displaying calendar timeline views.
 
 ## Overview
 
-TimelineUI provides SwiftUI views for displaying daily schedules with automatic conflict detection and layout. Events that overlap are automatically arranged side-by-side.
+TimelineUI provides SwiftUI views for displaying daily schedules. Events are positioned by time on an hour grid, and overlapping events are automatically arranged side-by-side.
 
-![Day timeline showing overlapping events](day-conflicts-light.png)
+![Day timeline showing events](day-conflicts-light.png)
 
 Use ``DayTimelineView`` for full-day schedules that expand to fill available space, or ``CompactTimelineView`` for a focused 2-3 hour window ideal for widgets.
 

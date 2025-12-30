@@ -1,6 +1,6 @@
 # Getting Started with TimelineUI
 
-Display calendar events in your iOS app with automatic conflict layout.
+Display calendar events in your iOS app with an hour-based timeline.
 
 ## Overview
 
