@@ -2,11 +2,9 @@ import SwiftUI
 
 public struct DayTimelineView: View {
 	public let items: [TimelineItem]
-	public var availableHeight: CGFloat?
 
-	public init(items: [TimelineItem], availableHeight: CGFloat? = nil) {
+	public init(items: [TimelineItem]) {
 		self.items = items
-		self.availableHeight = availableHeight
 	}
 
 	private let hourHeight: CGFloat = 44
@@ -24,7 +22,7 @@ public struct DayTimelineView: View {
 		items.filter { !$0.isAllDay }
 	}
 
-	private var timeRange: (start: Int, end: Int) {
+	private func timeRange(availableHeight: CGFloat) -> (start: Int, end: Int) {
 		let calendar = Calendar.current
 
 		guard let firstTimed = timedItems.first else {
@@ -45,16 +43,14 @@ public struct DayTimelineView: View {
 		var start = max(0, earliestHour - 1)
 		var end = min(latestHour + 2, earliestHour + 24)
 
-		if let availableHeight {
-			let hoursNeeded = end - start + 1
-			let hoursThatFit = Int(availableHeight / hourHeight)
-			if hoursThatFit > hoursNeeded {
-				let extraHours = hoursThatFit - hoursNeeded
-				let expandBefore = extraHours / 2
-				let expandAfter = extraHours - expandBefore
-				start = max(0, start - expandBefore)
-				end = min(23, end + expandAfter)
-			}
+		let hoursNeeded = end - start + 1
+		let hoursThatFit = Int(availableHeight / hourHeight)
+		if hoursThatFit > hoursNeeded {
+			let extraHours = hoursThatFit - hoursNeeded
+			let expandBefore = extraHours / 2
+			let expandAfter = extraHours - expandBefore
+			start = max(0, start - expandBefore)
+			end = min(23, end + expandAfter)
 		}
 
 		return (start, end)
@@ -67,30 +63,29 @@ public struct DayTimelineView: View {
 		return baseHour + hours
 	}
 
-	private var hours: [Int] {
-		Array(timeRange.start...timeRange.end)
-	}
-
 	public var body: some View {
-		VStack(alignment: .leading, spacing: 8) {
-			if !allDayItems.isEmpty {
-				allDaySection
-			}
+		GeometryReader { geometry in
+			let allDayHeight = allDayItems.isEmpty ? 0 : CGFloat(min(allDayItems.count, 3)) * 24 + 16
+			let availableHeight = geometry.size.height - allDayHeight - 16
+			let range = timeRange(availableHeight: availableHeight)
+			let hours = Array(range.start...range.end)
+			let contentWidth = geometry.size.width - labelWidth
 
-			GeometryReader { geometry in
-				let contentWidth = geometry.size.width - labelWidth
-				let layoutItems = buildEventLayout()
+			VStack(alignment: .leading, spacing: 8) {
+				if !allDayItems.isEmpty {
+					allDaySection
+				}
 
 				ZStack(alignment: .topLeading) {
-					hourLines(contentWidth: contentWidth)
+					hourLines(hours: hours, contentWidth: contentWidth)
 
-					ForEach(layoutItems) { layoutItem in
+					ForEach(buildEventLayout()) { layoutItem in
 						TimelineEventBlock(
 							item: layoutItem.item,
 							column: layoutItem.column,
 							totalColumns: layoutItem.totalColumns,
 							hourHeight: hourHeight,
-							rangeStart: timeRange.start,
+							rangeStart: range.start,
 							baseDate: baseDate,
 							labelWidth: labelWidth,
 							contentWidth: contentWidth
@@ -98,9 +93,8 @@ public struct DayTimelineView: View {
 					}
 				}
 			}
-			.frame(height: CGFloat(hours.count) * hourHeight)
+			.padding(.vertical, 8)
 		}
-		.padding(.vertical, 8)
 	}
 
 	private struct LayoutItem: Identifiable {
@@ -162,7 +156,7 @@ public struct DayTimelineView: View {
 		.padding(.horizontal, labelWidth + 8)
 	}
 
-	private func hourLines(contentWidth: CGFloat) -> some View {
+	private func hourLines(hours: [Int], contentWidth: CGFloat) -> some View {
 		VStack(alignment: .leading, spacing: 0) {
 			ForEach(hours, id: \.self) { hour in
 				HStack(alignment: .top, spacing: 0) {

@@ -59,3 +59,4 @@ Views accept `[TimelineItem]` arrays and handle layout automatically.
   @Test func `renders items with correct positions`() throws { ... }
   ```
 - Do not add comments unless asked
+- After modifying UI components, run `mise run previews` to regenerate preview images
