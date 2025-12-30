@@ -3,41 +3,36 @@
 
 import PackageDescription
 
+var targets: [Target] = [
+	.target(name: "TimelineUI"),
+	.target(
+		name: "TimelineUIEventKit",
+		dependencies: ["TimelineUI"],
+		linkerSettings: [.linkedFramework("EventKit")]
+	),
+	.testTarget(
+		name: "TimelineUITests",
+		dependencies: ["TimelineUI"]
+	),
+]
+
+#if os(macOS)
+targets.append(
+	.executableTarget(
+		name: "RenderPreviews",
+		dependencies: ["TimelineUI"],
+		path: "Sources/RenderPreviews",
+		linkerSettings: [.linkedFramework("AppKit")]
+	)
+)
+#endif
+
 let package = Package(
-    name: "TimelineUI",
-    platforms: [
-        .iOS(.v26),
-        .macOS(.v14),
-    ],
-    products: [
-        .library(
-            name: "TimelineUI",
-            targets: ["TimelineUI"]
-        ),
-        .library(
-            name: "TimelineUIEventKit",
-            targets: ["TimelineUIEventKit"]
-        ),
-    ],
-    targets: [
-        .target(
-            name: "TimelineUI"
-        ),
-        .target(
-            name: "TimelineUIEventKit",
-            dependencies: ["TimelineUI"],
-            linkerSettings: [
-                .linkedFramework("EventKit"),
-            ]
-        ),
-        .executableTarget(
-            name: "RenderPreviews",
-            dependencies: ["TimelineUI"],
-            path: "Sources/RenderPreviews"
-        ),
-        .testTarget(
-            name: "TimelineUITests",
-            dependencies: ["TimelineUI"]
-        ),
-    ]
+	name: "TimelineUI",
+	platforms: [.iOS(.v26), .macOS(.v14)],
+	products: [
+		.library(name: "TimelineUI", targets: ["TimelineUI"]),
+		.library(name: "TimelineUIEventKit", targets: ["TimelineUIEventKit"]),
+	],
+	targets: targets
 )
