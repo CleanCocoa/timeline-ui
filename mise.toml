@@ -20,3 +20,12 @@ run = "swift package clean"
 [tasks.previews]
 description = "Generate preview PNG images"
 run = "swift run RenderPreviews"
+
+[tasks.animation]
+description = "Generate animation frames and GIF"
+run = """
+swift run RenderPreviews --animation && \
+ffmpeg -y -framerate 30 -i previews/animation/light/frame_%03d.png \
+  -vf "fps=15,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+  previews/expand-animation.gif
+"""
