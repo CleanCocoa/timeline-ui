@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#MISE description="Pre-commit hook: format and verify no changes"
+
+set -euo pipefail
+
+DIFF_BEFORE_FILE=$(mktemp)
+DIFF_AFTER_FILE=$(mktemp)
+
+trap "rm -f $DIFF_BEFORE_FILE $DIFF_AFTER_FILE" EXIT
+
+git diff -- $(git ls-files --modified) > "$DIFF_BEFORE_FILE"
+
+mise task run format >/dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+    echo "Error: 'mise task run format' failed."
+    exit 1
+fi
+
+git diff -- $(git ls-files --modified) > "$DIFF_AFTER_FILE"
+
+if ! cmp -s "$DIFF_BEFORE_FILE" "$DIFF_AFTER_FILE"; then
+    echo "Error: Formatting modified files. Please review and re-stage your changes."
+    echo "Files with unstaged changes:"
+    git diff --name-only
+    exit 1
+fi
+
+exit 0
