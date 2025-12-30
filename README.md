@@ -1,5 +1,9 @@
 # TimelineUI
 
+<a href="https://codeberg.org/ctietze/timeline-ui"><img src="https://img.shields.io/badge/Codeberg-canonical-2185D0?logo=codeberg" alt="Codeberg"></a>
+<img src="https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white" alt="Swift 6.2">
+<img src="https://img.shields.io/badge/iOS-26%2B-000000?logo=apple&logoColor=white" alt="iOS 26+">
+
 A SwiftUI component library for displaying calendar timeline views in iOS apps. Show daily schedules on an hour grid with automatic layout for overlapping events.
 
 ## Installation
@@ -8,9 +12,11 @@ Add TimelineUI to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/TimelineUI.git", from: "1.0.0")
+    .package(url: "https://codeberg.org/ctietze/timeline-ui.git", from: "1.0.0")
 ]
 ```
+
+> **Note:** This project is canonically hosted on [Codeberg](https://codeberg.org/ctietze/timeline-ui). GitHub is a mirror.
 
 ## Quick Start
 
@@ -107,7 +113,6 @@ AccessPromptView(
 ## Requirements
 
 - iOS 26+
-- macOS 14+
 - Swift 6.2+
 
 ## License
