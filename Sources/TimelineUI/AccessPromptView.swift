@@ -1,13 +1,13 @@
 import SwiftUI
 
-public struct AccessPromptView<ButtonLabel: View>: View {
+public struct AccessPromptView<Icon: View, ButtonLabel: View>: View {
 	public enum Style {
 		case compact
 		case expanded
 	}
 
 	let style: Style
-	let icon: String
+	let icon: Icon
 	let title: String
 	let message: String
 	let buttonLabel: ButtonLabel
@@ -15,14 +15,14 @@ public struct AccessPromptView<ButtonLabel: View>: View {
 
 	public init(
 		style: Style = .compact,
-		icon: String = "lock.fill",
 		title: String = "Access Required",
 		message: String = "Grant access to view this content",
+		@ViewBuilder icon: () -> Icon,
 		@ViewBuilder buttonLabel: () -> ButtonLabel,
 		onRequestAccess: @escaping () async -> Void
 	) {
 		self.style = style
-		self.icon = icon
+		self.icon = icon()
 		self.title = title
 		self.message = message
 		self.buttonLabel = buttonLabel()
@@ -64,7 +64,7 @@ public struct AccessPromptView<ButtonLabel: View>: View {
 		VStack(spacing: 16) {
 			Spacer()
 
-			Image(systemName: icon)
+			icon
 				.font(.system(size: 48))
 				.foregroundStyle(.secondary)
 
@@ -95,7 +95,7 @@ public struct AccessPromptView<ButtonLabel: View>: View {
 	}
 }
 
-extension AccessPromptView where ButtonLabel == Label<Text, Image> {
+extension AccessPromptView where Icon == Image, ButtonLabel == Label<Text, Image> {
 	public init(
 		style: Style = .compact,
 		icon: String = "lock.fill",
@@ -106,9 +106,9 @@ extension AccessPromptView where ButtonLabel == Label<Text, Image> {
 	) {
 		self.init(
 			style: style,
-			icon: icon,
 			title: title,
 			message: message,
+			icon: { Image(systemName: icon) },
 			buttonLabel: { Label(buttonLabel, systemImage: icon) },
 			onRequestAccess: onRequestAccess
 		)
@@ -121,14 +121,17 @@ extension AccessPromptView where ButtonLabel == Label<Text, Image> {
 		buttonLabel: String? = nil,
 		onRequestAccess: @escaping () async -> Void
 	) -> AccessPromptView {
-		let icon = "calendar.badge.checkmark"
+		let iconName = "calendar.badge.checkmark"
 		return AccessPromptView(
 			style: style,
-			icon: icon,
 			title: title ?? (style == .compact ? "See your schedule" : "See Your Schedule"),
 			message: message ?? "Allow calendar access to show your events",
+			icon: { Image(systemName: iconName) },
 			buttonLabel: {
-				Label(buttonLabel ?? (style == .compact ? "Grant Access" : "Grant Calendar Access"), systemImage: icon)
+				Label(
+					buttonLabel ?? (style == .compact ? "Grant Access" : "Grant Calendar Access"),
+					systemImage: iconName
+				)
 			},
 			onRequestAccess: onRequestAccess
 		)
