@@ -235,13 +235,18 @@ func accessControlPreviews() -> [(name: String, view: AnyView, size: CGSize)] {
 		(
 			"access-prompt-compact",
 			AnyView(
-				AccessPromptView.calendar(style: .compact) {}
-					.frame(width: 280)
-					.padding(16)
-					.background(.background)
-					.clipShape(RoundedRectangle(cornerRadius: 12))
-					.padding(20)
-					.background(Color(nsColor: .windowBackgroundColor))
+				AccessPromptView.calendar(
+					style: .compact,
+					title: "Check for conflicts",
+					message: "See if this time works with your schedule",
+					buttonLabel: "Enable Calendar"
+				) {}
+				.frame(width: 280)
+				.padding(16)
+				.background(.background)
+				.clipShape(RoundedRectangle(cornerRadius: 12))
+				.padding(20)
+				.background(Color(nsColor: .windowBackgroundColor))
 			),
 			CGSize(width: 352, height: 180)
 		),
@@ -263,7 +268,12 @@ func accessControlPreviews() -> [(name: String, view: AnyView, size: CGSize)] {
 				CompactTimelineView(items: [], heightMode: .fixed(hours: 2))
 					.frame(width: 375, height: 132)
 					.accessRestricted(true) {
-						AccessPromptView.calendar(style: .compact) {}
+						AccessPromptView.calendar(
+							style: .compact,
+							title: "See Your Schedule",
+							message: "Allow calendar access to show your events",
+							buttonLabel: "Grant Calendar Access"
+						) {}
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 12))
 					.background(.background, in: RoundedRectangle(cornerRadius: 12))
