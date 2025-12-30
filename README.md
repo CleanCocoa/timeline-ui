@@ -52,10 +52,12 @@ DayTimelineView(items: [TimelineItem])
 
 ### CompactTimelineView
 
-Compact 2-3 hour window, ideal for widgets or previews.
+Compact timeline window, ideal for widgets or previews.
 
 ```swift
-CompactTimelineView(items: [TimelineItem], visibleHours: 2)
+CompactTimelineView(items: [TimelineItem])                      // Fills available height
+CompactTimelineView(items: [TimelineItem], heightMode: .flexible)      // Same as above
+CompactTimelineView(items: [TimelineItem], heightMode: .fixed(hours: 2)) // Fixed 2-hour window
 ```
 
 ## Screenshots

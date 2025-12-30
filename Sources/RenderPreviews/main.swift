@@ -141,7 +141,7 @@ let allDayItems: [TimelineItem] = [
 
 enum ViewType {
 	case day
-	case compact
+	case compact(HeightMode, height: CGFloat)
 }
 
 let previewScenarios: [(name: String, items: [TimelineItem], viewType: ViewType)] = [
@@ -149,9 +149,12 @@ let previewScenarios: [(name: String, items: [TimelineItem], viewType: ViewType)
 	("day-conflicts", conflictingItems, .day),
 	("day-with-allday", allDayItems, .day),
 	("day-many", manyItems, .day),
-	("compact-simple", sampleItems, .compact),
-	("compact-conflicts", conflictingItems, .compact),
-	("compact-many", manyItems, .compact),
+	("compact-simple", sampleItems, .compact(.fixed(hours: 2), height: 132)),
+	("compact-conflicts", conflictingItems, .compact(.fixed(hours: 2), height: 132)),
+	("compact-many", manyItems, .compact(.fixed(hours: 2), height: 132)),
+	("compact-fixed-1", conflictingItems, .compact(.fixed(hours: 1), height: 88)),
+	("compact-fixed-0", conflictingItems, .compact(.fixed(hours: 0), height: 88)),
+	("compact-flexible", conflictingItems, .compact(.flexible, height: 173)),
 ]
 
 func makeDate(hour: Int, minute: Int) -> Date {
@@ -189,16 +192,16 @@ func renderAllPreviews() {
 					.background(Color(nsColor: .windowBackgroundColor))
 			)
 			size = CGSize(width: 435, height: 572)
-		case .compact:
+		case .compact(let heightMode, let height):
 			view = AnyView(
-				CompactTimelineView(items: items, visibleHours: 2)
-					.frame(width: 375)
+				CompactTimelineView(items: items, heightMode: heightMode)
+					.frame(width: 375, height: height)
 					.clipShape(RoundedRectangle(cornerRadius: 12))
 					.background(.background, in: RoundedRectangle(cornerRadius: 12))
 					.padding(20)
 					.background(Color(nsColor: .windowBackgroundColor))
 			)
-			size = CGSize(width: 415, height: 172)
+			size = CGSize(width: 415, height: height + 40)
 		}
 
 		if let lightImage = renderView(view.environment(\.colorScheme, .light), size: size) {

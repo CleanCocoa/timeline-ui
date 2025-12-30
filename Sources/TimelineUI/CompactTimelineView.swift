@@ -1,12 +1,17 @@
 import SwiftUI
 
+public enum HeightMode: Sendable {
+	case flexible
+	case fixed(hours: Int)
+}
+
 public struct CompactTimelineView: View {
 	public let items: [TimelineItem]
-	public var visibleHours: Int
+	public var heightMode: HeightMode
 
-	public init(items: [TimelineItem], visibleHours: Int = 2) {
+	public init(items: [TimelineItem], heightMode: HeightMode = .flexible) {
 		self.items = items
-		self.visibleHours = visibleHours
+		self.heightMode = heightMode
 	}
 
 	private let hourHeight: CGFloat = 44
@@ -16,43 +21,70 @@ public struct CompactTimelineView: View {
 		items.first(where: { $0.isPrimary })?.startDate ?? items.first?.startDate ?? Date()
 	}
 
-	private var timeRange: (start: Int, end: Int) {
+	private func timeRange(visibleHours: Int) -> (start: Int, end: Int) {
+		let hours = max(visibleHours, 1)
 		let calendar = Calendar.current
 		let eventHour = calendar.component(.hour, from: baseDate)
 		let start = max(0, eventHour - 1)
-		let end = min(24, start + visibleHours + 1)
+		let end = min(24, start + hours + 1)
 		return (start, end)
 	}
 
-	private var hours: [Int] {
-		Array(timeRange.start...timeRange.end)
-	}
-
-	private var timedItems: [TimelineItem] {
+	private func timedItems(range: (start: Int, end: Int)) -> [TimelineItem] {
 		items.filter { item in
 			guard !item.isAllDay else { return false }
 			let calendar = Calendar.current
 			let itemHour = calendar.component(.hour, from: item.startDate)
 			let itemEndHour = calendar.component(.hour, from: item.endDate)
-			return itemHour <= timeRange.end && itemEndHour >= timeRange.start
+			return itemHour <= range.end && itemEndHour >= range.start
 		}
 	}
 
 	public var body: some View {
+		switch heightMode {
+		case .flexible:
+			flexibleBody
+		case .fixed(let hours):
+			fixedBody(hours: hours)
+		}
+	}
+
+	private var flexibleBody: some View {
 		GeometryReader { geometry in
+			let visibleHours = max(1, Int(geometry.size.height / hourHeight) - 1)
+			let range = timeRange(visibleHours: visibleHours)
+			let hours = Array(range.start...range.end)
 			let contentWidth = geometry.size.width - labelWidth - 16
-			let layoutItems = buildEventLayout(contentWidth: contentWidth)
 
 			ZStack(alignment: .topLeading) {
-				hourLines(contentWidth: contentWidth)
+				hourLines(hours: hours, contentWidth: contentWidth)
 
-				ForEach(layoutItems) { layoutItem in
-					compactEventBlock(layoutItem: layoutItem, contentWidth: contentWidth)
+				ForEach(buildEventLayout(range: range, contentWidth: contentWidth)) { layoutItem in
+					compactEventBlock(layoutItem: layoutItem, range: range, contentWidth: contentWidth)
+				}
+			}
+			.padding(.horizontal, 8)
+		}
+	}
+
+	private func fixedBody(hours visibleHours: Int) -> some View {
+		let normalizedHours = max(visibleHours, 1)
+		let range = timeRange(visibleHours: normalizedHours)
+		let hours = Array(range.start...range.end)
+
+		return GeometryReader { geometry in
+			let contentWidth = geometry.size.width - labelWidth - 16
+
+			ZStack(alignment: .topLeading) {
+				hourLines(hours: hours, contentWidth: contentWidth)
+
+				ForEach(buildEventLayout(range: range, contentWidth: contentWidth)) { layoutItem in
+					compactEventBlock(layoutItem: layoutItem, range: range, contentWidth: contentWidth)
 				}
 			}
 		}
 		.padding(.horizontal, 8)
-		.frame(height: CGFloat(visibleHours + 1) * hourHeight)
+		.frame(height: CGFloat(normalizedHours + 1) * hourHeight)
 	}
 
 	private struct LayoutItem: Identifiable {
@@ -62,8 +94,8 @@ public struct CompactTimelineView: View {
 		var totalColumns: Int = 1
 	}
 
-	private func buildEventLayout(contentWidth: CGFloat) -> [LayoutItem] {
-		var layoutItems = timedItems.map { LayoutItem(id: $0.id, item: $0) }
+	private func buildEventLayout(range: (start: Int, end: Int), contentWidth: CGFloat) -> [LayoutItem] {
+		var layoutItems = timedItems(range: range).map { LayoutItem(id: $0.id, item: $0) }
 		layoutItems.sort { $0.item.startDate < $1.item.startDate }
 
 		var columns: [[LayoutItem]] = []
@@ -92,13 +124,15 @@ public struct CompactTimelineView: View {
 		return layoutItems
 	}
 
-	private func compactEventBlock(layoutItem: LayoutItem, contentWidth: CGFloat) -> some View {
+	private func compactEventBlock(layoutItem: LayoutItem, range: (start: Int, end: Int), contentWidth: CGFloat)
+		-> some View
+	{
 		let item = layoutItem.item
 		let calendar = Calendar.current
 		let eventHour = calendar.component(.hour, from: baseDate)
 		let hoursSinceBase = item.startDate.timeIntervalSince(baseDate) / 3600.0
 		let actualHour = Double(eventHour) + hoursSinceBase
-		let hoursFromRangeStart = actualHour - Double(timeRange.start)
+		let hoursFromRangeStart = actualHour - Double(range.start)
 		let yOffset = CGFloat(hoursFromRangeStart) * hourHeight
 
 		let duration = item.endDate.timeIntervalSince(item.startDate)
@@ -128,7 +162,7 @@ public struct CompactTimelineView: View {
 		.offset(x: xOffset, y: yOffset)
 	}
 
-	private func hourLines(contentWidth: CGFloat) -> some View {
+	private func hourLines(hours: [Int], contentWidth: CGFloat) -> some View {
 		VStack(alignment: .leading, spacing: 0) {
 			ForEach(hours, id: \.self) { hour in
 				HStack(alignment: .top, spacing: 0) {
