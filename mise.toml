@@ -18,10 +18,11 @@ description = "Clean build artifacts"
 run = "swift package clean"
 
 [tasks.previews]
-description = "Generate preview PNG images"
+description = "Generate preview PNG images and animation GIF"
+depends = ["previews:animation"]
 run = "swift run RenderPreviews"
 
-[tasks.animation]
+[tasks."previews:animation"]
 description = "Generate animation frames and GIF"
 run = """
 swift run RenderPreviews --animation && \
