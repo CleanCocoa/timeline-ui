@@ -5,18 +5,24 @@ import PackageDescription
 
 let package = Package(
     name: "TimelineUI",
+    platforms: [
+        .iOS(.v26),
+        .macOS(.v14),
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "TimelineUI",
             targets: ["TimelineUI"]
         ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "TimelineUI"
+        ),
+        .executableTarget(
+            name: "RenderPreviews",
+            dependencies: ["TimelineUI"],
+            path: "Sources/RenderPreviews"
         ),
         .testTarget(
             name: "TimelineUITests",

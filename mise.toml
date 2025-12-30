@@ -3,7 +3,7 @@ swift = "latest"
 
 [tasks.format]
 description = "Format Swift source files"
-run = "swift format --in-place --recursive --parallel ./Sources ./Tests ./App/Sources"
+run = "swift format --in-place --recursive --parallel ./Sources ./Tests"
 
 [tasks.build]
 description = "Build the Swift package"
@@ -16,3 +16,7 @@ run = "swift test"
 [tasks.clean]
 description = "Clean build artifacts"
 run = "swift package clean"
+
+[tasks.previews]
+description = "Generate preview PNG images"
+run = "swift run RenderPreviews"
