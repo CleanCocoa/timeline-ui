@@ -77,13 +77,21 @@ Customize the prompt text:
 
 ```swift
 AccessPromptView.calendar(
-    style: .compact,
     title: "Check for conflicts",
     message: "See if this time works with your schedule",
     buttonLabel: "Enable Calendar"
-) {
-    await requestAccess()
-}
+) { await requestAccess() }
+```
+
+Or use ViewBuilders for full control over icon and button:
+
+```swift
+AccessPromptView(
+    title: "Connect Calendar",
+    message: "Show your events on the timeline",
+    icon: { Image(systemName: "calendar.badge.plus") },
+    buttonLabel: { Label("Allow Access", systemImage: "checkmark.circle") }
+) { await requestAccess() }
 ```
 
 ## Screenshots
