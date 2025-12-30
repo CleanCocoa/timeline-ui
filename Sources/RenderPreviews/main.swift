@@ -54,6 +54,65 @@ let conflictingItems: [TimelineItem] = [
 	),
 ]
 
+let manyItems: [TimelineItem] = [
+	TimelineItem(
+		title: "Standup",
+		startDate: makeDate(hour: 10, minute: 0),
+		endDate: makeDate(hour: 10, minute: 30),
+		color: .blue,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "Design Review",
+		startDate: makeDate(hour: 10, minute: 0),
+		endDate: makeDate(hour: 11, minute: 0),
+		color: .purple,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "1:1 with Sarah",
+		startDate: makeDate(hour: 10, minute: 15),
+		endDate: makeDate(hour: 10, minute: 45),
+		color: .green,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "Sprint Planning",
+		startDate: makeDate(hour: 10, minute: 0),
+		endDate: makeDate(hour: 11, minute: 30),
+		color: .orange,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "Client Call",
+		startDate: makeDate(hour: 10, minute: 30),
+		endDate: makeDate(hour: 11, minute: 0),
+		color: .red,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "New Meeting",
+		startDate: makeDate(hour: 10, minute: 15),
+		endDate: makeDate(hour: 11, minute: 15),
+		color: .accentColor,
+		isPrimary: true
+	),
+	TimelineItem(
+		title: "Lunch & Learn",
+		startDate: makeDate(hour: 10, minute: 0),
+		endDate: makeDate(hour: 10, minute: 45),
+		color: .cyan,
+		isPrimary: false
+	),
+	TimelineItem(
+		title: "Interview",
+		startDate: makeDate(hour: 10, minute: 30),
+		endDate: makeDate(hour: 11, minute: 30),
+		color: .pink,
+		isPrimary: false
+	),
+]
+
 let allDayItems: [TimelineItem] = [
 	TimelineItem(
 		title: "Company Retreat",
@@ -89,8 +148,10 @@ let previewScenarios: [(name: String, items: [TimelineItem], viewType: ViewType)
 	("day-simple", sampleItems, .day),
 	("day-conflicts", conflictingItems, .day),
 	("day-with-allday", allDayItems, .day),
+	("day-many", manyItems, .day),
 	("compact-simple", sampleItems, .compact),
 	("compact-conflicts", conflictingItems, .compact),
+	("compact-many", manyItems, .compact),
 ]
 
 func makeDate(hour: Int, minute: Int) -> Date {

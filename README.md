@@ -65,6 +65,7 @@ CompactTimelineView(items: [TimelineItem], visibleHours: 2)
 | **Compact** - 2-3 hour window with conflict layout | ![Compact light](screenshots/compact-conflicts-light.png) | ![Compact dark](screenshots/compact-conflicts-dark.png) |
 | **Day** - Full schedule with hour grid | ![Day light](screenshots/day-simple-light.png) | ![Day dark](screenshots/day-simple-dark.png) |
 | **Conflicts** - Overlapping events side-by-side | ![Conflicts light](screenshots/day-conflicts-light.png) | ![Conflicts dark](screenshots/day-conflicts-dark.png) |
+| **Many events** - Handles arbitrary input gracefully | ![Many light](screenshots/compact-many-light.png) | ![Many dark](screenshots/compact-many-dark.png) |
 
 ## API Reference
 
