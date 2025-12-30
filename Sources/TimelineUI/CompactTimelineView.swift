@@ -1,14 +1,71 @@
 import SwiftUI
 
+/// Controls how a ``CompactTimelineView`` determines its height.
+///
+/// Use `flexible` to fill available space, or `fixed(hours:)` for a specific time window.
+///
+/// ```swift
+/// CompactTimelineView(items: events)                           // Fills container
+/// CompactTimelineView(items: events, heightMode: .flexible)    // Same as above
+/// CompactTimelineView(items: events, heightMode: .fixed(hours: 2))  // Shows ~2 hours
+/// ```
 public enum HeightMode: Sendable {
+	/// The timeline expands to fill available vertical space.
+	///
+	/// Use this mode when embedding the timeline in a container with a defined height,
+	/// such as a sheet, card, or fixed-size frame. The view calculates how many hours
+	/// fit in the available space and displays that range.
 	case flexible
+
+	/// The timeline displays a fixed number of hours.
+	///
+	/// Use this mode for widgets or previews where you want a consistent height
+	/// regardless of container size.
+	///
+	/// - Parameter hours: The number of hours to display. Values less than 1 are
+	///   treated as 1 hour to ensure the timeline remains usable.
+	///
+	/// ```swift
+	/// .fixed(hours: 2)  // Shows a 2-hour window
+	/// .fixed(hours: 0)  // Treated as 1 hour
+	/// ```
 	case fixed(hours: Int)
 }
 
+/// A compact timeline view showing a focused window of hours.
+///
+/// Use `CompactTimelineView` for widgets, previews, or anywhere you need a condensed
+/// view of upcoming events. The view automatically centers on the first event or
+/// the current time if no events are provided.
+///
+/// ```swift
+/// CompactTimelineView(items: events)
+///     .frame(height: 200)
+/// ```
+///
+/// Events are positioned by time, and overlapping events are arranged side-by-side
+/// in columns.
+///
+/// ## Controlling Height
+///
+/// By default, the view uses ``HeightMode/flexible`` to fill available space.
+/// Use ``HeightMode/fixed(hours:)`` for a consistent height:
+///
+/// ```swift
+/// CompactTimelineView(items: events, heightMode: .fixed(hours: 2))
+/// ```
 public struct CompactTimelineView: View {
+	/// The events to display on the timeline.
 	public let items: [TimelineItem]
+
+	/// How the view determines its height.
 	public var heightMode: HeightMode
 
+	/// Creates a compact timeline view.
+	///
+	/// - Parameters:
+	///   - items: The events to display. Pass an empty array to show just the hour grid.
+	///   - heightMode: How the view determines its height. Defaults to ``HeightMode/flexible``.
 	public init(items: [TimelineItem], heightMode: HeightMode = .flexible) {
 		self.items = items
 		self.heightMode = heightMode

@@ -1,8 +1,39 @@
 import SwiftUI
 
+/// A full-day timeline view with an hour grid.
+///
+/// Use `DayTimelineView` to display a complete daily schedule. The view automatically
+/// expands to fill available vertical space, showing more hours when there's room.
+///
+/// ```swift
+/// DayTimelineView(items: events)
+/// ```
+///
+/// Events are positioned by their start and end times on an hour grid. Overlapping
+/// events are automatically arranged side-by-side in columns.
+///
+/// ## All-Day Events
+///
+/// Events with `isAllDay: true` appear in a separate section at the top of the timeline,
+/// above the hour grid.
+///
+/// ## Responsive Layout
+///
+/// The view uses a `GeometryReader` to detect available height and expands the visible
+/// time range accordingly. Place it in a container with a defined height:
+///
+/// ```swift
+/// DayTimelineView(items: events)
+///     .frame(height: 500)
+/// ```
 public struct DayTimelineView: View {
+	/// The events to display on the timeline.
 	public let items: [TimelineItem]
 
+	/// Creates a day timeline view.
+	///
+	/// - Parameter items: The events to display. Pass an empty array to show just the hour grid.
+	///   The view centers on the first event's time, or the current time if no events are provided.
 	public init(items: [TimelineItem]) {
 		self.items = items
 	}
