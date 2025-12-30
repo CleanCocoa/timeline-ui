@@ -60,6 +60,32 @@ CompactTimelineView(items: [TimelineItem], heightMode: .flexible)      // Same a
 CompactTimelineView(items: [TimelineItem], heightMode: .fixed(hours: 2)) // Fixed 2-hour window
 ```
 
+### Access Restricted View
+
+Show a blurred timeline with a permission prompt when calendar access hasn't been granted:
+
+```swift
+CompactTimelineView(items: [])
+    .accessRestricted(!hasCalendarAccess) {
+        AccessPromptView.calendar(style: .compact) {
+            await requestCalendarAccess()
+        }
+    }
+```
+
+Customize the prompt text:
+
+```swift
+AccessPromptView.calendar(
+    style: .compact,
+    title: "Check for conflicts",
+    message: "See if this time works with your schedule",
+    buttonLabel: "Enable Calendar"
+) {
+    await requestAccess()
+}
+```
+
 ## Screenshots
 
 | | Light | Dark |
@@ -69,33 +95,6 @@ CompactTimelineView(items: [TimelineItem], heightMode: .fixed(hours: 2)) // Fixe
 | **Conflicts** - Overlapping events side-by-side | ![Conflicts light](screenshots/day-conflicts-light.png) | ![Conflicts dark](screenshots/day-conflicts-dark.png) |
 | **Many events** - Handles arbitrary input gracefully | ![Many light](screenshots/compact-many-light.png) | ![Many dark](screenshots/compact-many-dark.png) |
 | **Access restricted** - Blurred timeline with permission prompt | ![Restricted light](screenshots/access-restricted-light.png) | ![Restricted dark](screenshots/access-restricted-dark.png) |
-
-## API Reference
-
-### TimelineItem
-
-```swift
-TimelineItem(
-    id: UUID = UUID(),
-    title: String,
-    startDate: Date,
-    endDate: Date,
-    isAllDay: Bool = false,
-    color: Color,
-    location: String? = nil,
-    isPrimary: Bool = false
-)
-```
-
-| Property | Description |
-|----------|-------------|
-| `title` | Event title displayed in the block |
-| `startDate` | Event start time |
-| `endDate` | Event end time |
-| `isAllDay` | Shows in all-day section instead of timed grid |
-| `color` | Accent color for the event block |
-| `location` | Optional location shown below title |
-| `isPrimary` | Lighter background style for "new" events |
 
 ## Requirements
 
