@@ -76,8 +76,7 @@ Import `TimelineUIEventKit` for EKEvent conversion:
 ```swift
 import TimelineUIEventKit
 
-let items = ekEvents.asTimelineItems()
-// or with a primary event:
+let item = TimelineItem(ekEvent)
 let items = ekEvents.asTimelineItems(primaryEventID: selectedEvent.eventIdentifier)
 ```
 

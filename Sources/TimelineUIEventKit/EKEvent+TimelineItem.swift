@@ -2,15 +2,15 @@ import EventKit
 import SwiftUI
 import TimelineUI
 
-extension EKEvent {
-	public func asTimelineItem(isPrimary: Bool = false) -> TimelineItem {
-		TimelineItem(
-			title: title ?? "Untitled",
-			startDate: startDate,
-			endDate: endDate,
-			isAllDay: isAllDay,
-			color: Color(cgColor: calendar.cgColor),
-			location: location,
+extension TimelineItem {
+	public init(_ event: EKEvent, isPrimary: Bool = false) {
+		self.init(
+			title: event.title ?? "Untitled",
+			startDate: event.startDate,
+			endDate: event.endDate,
+			isAllDay: event.isAllDay,
+			color: Color(cgColor: event.calendar.cgColor),
+			location: event.location,
 			isPrimary: isPrimary
 		)
 	}
@@ -19,7 +19,7 @@ extension EKEvent {
 extension [EKEvent] {
 	public func asTimelineItems(primaryEventID: String? = nil) -> [TimelineItem] {
 		map { event in
-			event.asTimelineItem(isPrimary: event.eventIdentifier == primaryEventID)
+			TimelineItem(event, isPrimary: event.eventIdentifier == primaryEventID)
 		}
 	}
 }
