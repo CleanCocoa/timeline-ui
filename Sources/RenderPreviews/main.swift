@@ -204,20 +204,75 @@ func renderAllPreviews() {
 			size = CGSize(width: 415, height: height + 40)
 		}
 
-		if let lightImage = renderView(view.environment(\.colorScheme, .light), size: size) {
-			let outputPath = lightDir.appendingPathComponent("\(name).png")
-			savePNG(lightImage, to: outputPath)
-			print("Rendered light/\(name).png")
-		}
+		renderToFiles(name: name, view: view, size: size, lightDir: lightDir, darkDir: darkDir)
+	}
 
-		if let darkImage = renderView(view.environment(\.colorScheme, .dark), size: size) {
-			let outputPath = darkDir.appendingPathComponent("\(name).png")
-			savePNG(darkImage, to: outputPath)
-			print("Rendered dark/\(name).png")
-		}
+	for (name, view, size) in accessControlPreviews() {
+		renderToFiles(name: name, view: view, size: size, lightDir: lightDir, darkDir: darkDir)
 	}
 
 	print("Done! Previews saved to \(outputDir.path)")
+}
+
+@MainActor
+func renderToFiles(name: String, view: AnyView, size: CGSize, lightDir: URL, darkDir: URL) {
+	if let lightImage = renderView(view.environment(\.colorScheme, .light), size: size) {
+		let outputPath = lightDir.appendingPathComponent("\(name).png")
+		savePNG(lightImage, to: outputPath)
+		print("Rendered light/\(name).png")
+	}
+
+	if let darkImage = renderView(view.environment(\.colorScheme, .dark), size: size) {
+		let outputPath = darkDir.appendingPathComponent("\(name).png")
+		savePNG(darkImage, to: outputPath)
+		print("Rendered dark/\(name).png")
+	}
+}
+
+@MainActor
+func accessControlPreviews() -> [(name: String, view: AnyView, size: CGSize)] {
+	[
+		(
+			"access-prompt-compact",
+			AnyView(
+				AccessPromptView.calendar(style: .compact) {}
+					.frame(width: 280)
+					.padding(16)
+					.background(.background)
+					.clipShape(RoundedRectangle(cornerRadius: 12))
+					.padding(20)
+					.background(Color(nsColor: .windowBackgroundColor))
+			),
+			CGSize(width: 352, height: 180)
+		),
+		(
+			"access-prompt-expanded",
+			AnyView(
+				AccessPromptView.calendar(style: .expanded) {}
+					.frame(width: 320, height: 300)
+					.background(.background)
+					.clipShape(RoundedRectangle(cornerRadius: 16))
+					.padding(20)
+					.background(Color(nsColor: .windowBackgroundColor))
+			),
+			CGSize(width: 360, height: 340)
+		),
+		(
+			"access-restricted-timeline",
+			AnyView(
+				CompactTimelineView(items: [], heightMode: .fixed(hours: 2))
+					.frame(width: 375, height: 132)
+					.accessRestricted(true) {
+						AccessPromptView.calendar(style: .compact) {}
+					}
+					.clipShape(RoundedRectangle(cornerRadius: 12))
+					.background(.background, in: RoundedRectangle(cornerRadius: 12))
+					.padding(20)
+					.background(Color(nsColor: .windowBackgroundColor))
+			),
+			CGSize(width: 415, height: 172)
+		),
+	]
 }
 
 @MainActor

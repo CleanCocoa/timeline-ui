@@ -24,6 +24,10 @@ mise run clean      # Clean build artifacts
   - `DayTimelineView.swift` - Full day timeline with hour grid
   - `CompactTimelineView.swift` - Compact 2-3 hour preview
   - `TimelineEventBlock.swift` - Individual event block component
+  - `AccessRestrictedModifier.swift` - Blur+overlay for restricted content
+  - `AccessPromptView.swift` - Standard UI for requesting access
+- **Sources/TimelineUIEventKit/** - Optional EventKit integration
+  - `EKEvent+TimelineItem.swift` - Convert EKEvent to TimelineItem
 - **Sources/RenderPreviews/** - macOS CLI to generate preview PNGs
 - **Tests/TimelineUITests/** - Unit tests for the library
 
@@ -31,8 +35,8 @@ mise run clean      # Clean build artifacts
 
 - Target: iOS 26+, macOS 14+
 - Swift 6.2 with modern concurrency
-- SwiftUI only - no UIKit dependencies in library
-- No external dependencies
+- SwiftUI only - no UIKit dependencies in core library
+- TimelineUIEventKit links EventKit framework
 
 ## API Design
 
@@ -51,6 +55,31 @@ TimelineItem(
 ```
 
 Views accept `[TimelineItem]` arrays and handle layout automatically.
+
+### Access Control
+
+For permission-restricted content (e.g., calendar access), use the blur+overlay modifier:
+
+```swift
+CompactTimelineView(items: items)
+    .accessRestricted(!canReadEvents) {
+        AccessPromptView.calendar(style: .compact) {
+            await requestAccess()
+        }
+    }
+```
+
+### EventKit Integration
+
+Import `TimelineUIEventKit` for EKEvent conversion:
+
+```swift
+import TimelineUIEventKit
+
+let items = ekEvents.asTimelineItems()
+// or with a primary event:
+let items = ekEvents.asTimelineItems(primaryEventID: selectedEvent.eventIdentifier)
+```
 
 ## Coding Conventions
 

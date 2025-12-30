@@ -14,10 +14,21 @@ let package = Package(
             name: "TimelineUI",
             targets: ["TimelineUI"]
         ),
+        .library(
+            name: "TimelineUIEventKit",
+            targets: ["TimelineUIEventKit"]
+        ),
     ],
     targets: [
         .target(
             name: "TimelineUI"
+        ),
+        .target(
+            name: "TimelineUIEventKit",
+            dependencies: ["TimelineUI"],
+            linkerSettings: [
+                .linkedFramework("EventKit"),
+            ]
         ),
         .executableTarget(
             name: "RenderPreviews",
