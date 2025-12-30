@@ -134,21 +134,3 @@ extension AccessPromptView where ButtonLabel == Label<Text, Image> {
 		)
 	}
 }
-
-@MainActor
-public func calendarAccessPrompt<BL: View>(
-	style: AccessPromptView<BL>.Style = .compact,
-	title: String? = nil,
-	message: String? = nil,
-	@ViewBuilder buttonLabel: () -> BL,
-	onRequestAccess: @escaping () async -> Void
-) -> AccessPromptView<BL> {
-	AccessPromptView<BL>(
-		style: style,
-		icon: "calendar.badge.checkmark",
-		title: title ?? (style == .compact ? "See your schedule" : "See Your Schedule"),
-		message: message ?? "Allow calendar access to show your events",
-		buttonLabel: buttonLabel,
-		onRequestAccess: onRequestAccess
-	)
-}
