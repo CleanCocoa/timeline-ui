@@ -98,14 +98,17 @@ public struct AccessPromptView: View {
 extension AccessPromptView {
 	public static func calendar(
 		style: Style = .compact,
+		title: String? = nil,
+		message: String? = nil,
+		buttonLabel: String? = nil,
 		onRequestAccess: @escaping () async -> Void
 	) -> AccessPromptView {
 		AccessPromptView(
 			style: style,
 			icon: "calendar.badge.checkmark",
-			title: style == .compact ? "See your schedule" : "See Your Schedule",
-			message: "Grant full calendar access to view conflicts",
-			buttonLabel: style == .compact ? "Grant Access" : "Grant Full Access",
+			title: title ?? (style == .compact ? "See your schedule" : "See Your Schedule"),
+			message: message ?? "Allow calendar access to show your events",
+			buttonLabel: buttonLabel ?? (style == .compact ? "Grant Access" : "Grant Calendar Access"),
 			onRequestAccess: onRequestAccess
 		)
 	}
