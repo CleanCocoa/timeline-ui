@@ -1,5 +1,36 @@
 import SwiftUI
 
+/// A container that coordinates expand/collapse transitions between compact and expanded timeline views.
+///
+/// Use `ExpandableTimelineContainer` with ``TimelineTransitionModifier`` to create smooth
+/// matched geometry animations when transitioning from a compact preview to a full day view.
+///
+/// ![Expandable timeline animation](animate-expansion.gif)
+///
+/// The container manages the tap gesture for expanding and provides an ``expandedOverlay``
+/// that should be applied at your view's root level:
+///
+/// ```swift
+/// @State private var isExpanded = false
+/// @Namespace private var timelineNamespace
+///
+/// CompactTimelineView(items: items)
+///     .timelineTransition(in: timelineNamespace)
+///     .onTapGesture {
+///         withAnimation(.spring(duration: 0.4, bounce: 0.15)) {
+///             isExpanded = true
+///         }
+///     }
+///     .overlay {
+///         if isExpanded {
+///             ExpandedTimelineContent(items: items) { headerView }
+///                 .timelineTransition(in: timelineNamespace)
+///         }
+///     }
+/// ```
+///
+/// > Important: The expanded overlay must be applied at your view hierarchy's root level
+/// > (not on the compact view) so the scrim covers the full screen.
 public struct ExpandableTimelineContainer<Header: View>: View {
 	@Binding var isExpanded: Bool
 	let compactCornerRadius: CGFloat
@@ -174,12 +205,32 @@ extension ExpandableTimelineContainer {
 	return PreviewWrapper()
 }
 
+/// The expanded view content shown when a timeline is expanded from its compact state.
+///
+/// This view displays a custom header followed by a full ``DayTimelineView``.
+/// Use it with ``TimelineTransitionModifier`` to animate the expansion.
+///
+/// ```swift
+/// ExpandedTimelineContent(items: events) {
+///     VStack {
+///         Text("January 20, 2025")
+///             .font(.headline)
+///         Text("\(events.count) events")
+///             .font(.subheadline)
+///     }
+/// }
+/// .timelineTransition(in: namespace)
+/// ```
 public struct ExpandedTimelineContent<Header: View>: View {
 	public typealias Header = Header
 
 	let items: [TimelineItem]
 	let header: () -> Header
 
+	/// Creates an expanded timeline content view.
+	/// - Parameters:
+	///   - items: The timeline events to display.
+	///   - header: A view builder for the header shown above the timeline.
 	public init(
 		items: [TimelineItem],
 		@ViewBuilder header: @escaping () -> Header

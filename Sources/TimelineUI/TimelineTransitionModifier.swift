@@ -1,10 +1,26 @@
 import SwiftUI
 
+/// Identifier for matched geometry effects in timeline transitions.
 public enum TimelineTransitionID: Hashable {
+	/// The default identifier for timeline background transitions.
 	case background
+	/// A custom identifier for additional matched geometry effects.
 	case custom(String)
 }
 
+/// A view modifier that applies matched geometry effects for smooth timeline expand/collapse animations.
+///
+/// Apply this modifier to both the compact and expanded timeline views using the same namespace
+/// to create a smooth morphing animation between states.
+///
+/// Use the ``SwiftUICore/View/timelineTransition(id:in:)`` modifier for convenient access:
+///
+/// ```swift
+/// @Namespace private var namespace
+///
+/// CompactTimelineView(items: items)
+///     .timelineTransition(in: namespace)
+/// ```
 public struct TimelineTransitionModifier: ViewModifier {
 	let id: TimelineTransitionID
 	let namespace: Namespace.ID

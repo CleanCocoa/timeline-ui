@@ -32,6 +32,12 @@ Use ``DayTimelineView`` for full-day schedules that expand to fill available spa
 - ``TimelineItem``
 - ``TimelineEventBlock``
 
+### Expandable Timeline
+
+- ``ExpandableTimelineContainer``
+- ``ExpandedTimelineContent``
+- ``TimelineTransitionModifier``
+
 ### Access Control
 
 - ``AccessPromptView``

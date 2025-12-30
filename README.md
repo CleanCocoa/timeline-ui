@@ -66,6 +66,34 @@ CompactTimelineView(items: [TimelineItem], heightMode: .flexible)      // Same a
 CompactTimelineView(items: [TimelineItem], heightMode: .fixed(hours: 2)) // Fixed 2-hour window
 ```
 
+### Expandable Timeline
+
+Tap a compact timeline to expand into a full day view with a smooth matched geometry animation:
+
+![Expandable timeline animation](screenshots/animate-expansion.gif)
+
+```swift
+@State private var isExpanded = false
+@Namespace private var timelineNamespace
+
+// Compact view with tap-to-expand
+CompactTimelineView(items: items, heightMode: .fixed(hours: 2))
+    .timelineTransition(in: timelineNamespace)
+    .onTapGesture {
+        withAnimation(.spring(duration: 0.4, bounce: 0.15)) {
+            isExpanded = true
+        }
+    }
+
+// Apply expanded overlay at root level
+.overlay {
+    if isExpanded {
+        ExpandedTimelineContent(items: items) { headerView }
+            .timelineTransition(in: timelineNamespace)
+    }
+}
+```
+
 ### Access Restricted View
 
 Show a blurred timeline with a permission prompt when calendar access hasn't been granted:
